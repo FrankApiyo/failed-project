@@ -10,33 +10,28 @@ def connect():
  
         # connect to the PostgreSQL server
         print('Connecting to the PostgreSQL database...')
-        connection = psycopg2.connect(**params)
+        conn = psycopg2.connect(**params)
  
-
-        cur = connection.cursor()
-
-        # sql = "CREATE DATABASE IF NOT EXISTS crimemap"
-        # cur.execute(sql)
-        sql = """CREATE TABLE IF NOT EXISTS crimes (
-                id int NOT NULL,
-                latitude FLOAT,
-                longitude FLOAT,
-                date DATE,
-                category VARCHAR(50),
-                description VARCHAR(1000),
-                updated_at TIMESTAMP,
-                PRIMARY KEY (id)
-            )"""
-        cur.execute(sql);
-        connection.commit()
+        # create a cursor
+        cur = conn.cursor()
+        
+ # execute a statement
+        print('PostgreSQL database version:')
+        cur.execute('SELECT version()')
+ 
+        # display the PostgreSQL database server version
+        db_version = cur.fetchone()
+        print(db_version)
+       
+     # close the communication with the PostgreSQL
         cur.close()
     except (Exception, psycopg2.DatabaseError) as error:
         print(error)
     finally:
-        if connection is not None:
-            connection.close()
-        print('Database connection closed.')
-            
+        if conn is not None:
+            conn.close()
+            print('Database connection closed.')
+ 
  
 if __name__ == '__main__':
     connect()
